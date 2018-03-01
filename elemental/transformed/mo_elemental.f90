@@ -10,9 +10,14 @@ contains
   real, dimension(nc) :: do_some_stuff
   integer, intent(in) :: nc
   integer :: i_nc
-  
+
+  !$acc data present(arg1, arg2)
+  !$acc parallel
+  !$acc loop gang vector
   do i_nc = 1, nc
     do_some_stuff(i_nc) = arg1(i_nc) * coef1 * (1.0 + coef2 * arg2(i_nc))
   end do
+  !$acc end parallel
+  !$acc end data
  end function do_some_stuff
 end module mo_elemental
