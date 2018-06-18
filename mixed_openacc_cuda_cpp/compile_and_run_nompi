@@ -1,0 +1,10 @@
+#!/bin/bash
+
+module load craype-accel-nvidia60
+export MPICH_RDMA_ENABLED_CUDA=1
+
+nvcc -c compute_cuda.cu
+CC -c std_cpp_call.cpp
+ftn -eZ openacc_cuda_mpi_cppstd.f90 compute_cuda.o std_cpp_call.o
+
+srun -n1 --ntasks-per-core=1 --ntasks-per-node=1 --cpus-per-task=1 --job-name=reframe  -C gpu --account=c15 --time=00:05:00 ./a.out 
